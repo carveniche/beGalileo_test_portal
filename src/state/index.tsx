@@ -69,17 +69,26 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
       getToken: async (user_identity, room_name) => {
         const endpoint = process.env.REACT_APP_TOKEN_ENDPOINT || '/token';
 
-        return fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json',
-          },
-          body: JSON.stringify({
-            user_identity,
-            room_name,
-            create_conversation: process.env.REACT_APP_DISABLE_TWILIO_CONVERSATIONS !== 'true',
-          }),
-        }).then(res => res.json());
+        return fetch(
+          endpoint +
+            '/?' +
+            new URLSearchParams({
+              user_identity: user_identity,
+              room_name: room_name,
+              create_conversation: 'false',
+            }),
+          {
+            method: 'POST',
+            // headers: {
+            //   'content-type': 'application/json',
+            // },
+            // body: JSON.stringify({
+            //   user_identity,
+            //   room_name,
+            //   create_conversation: process.env.REACT_APP_DISABLE_TWILIO_CONVERSATIONS !== 'true',
+            // }),
+          }
+        ).then(res => res.json());
       },
       updateRecordingRules: async (room_sid, rules) => {
         const endpoint = process.env.REACT_APP_TOKEN_ENDPOINT || '/recordingrules';
